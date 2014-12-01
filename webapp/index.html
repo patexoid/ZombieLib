@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html ng-app="lib">
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="angular.js"></script>
+    <script src="lib.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib.css">
+
+</head>
+<body>
+<div id="header">
+
+</div>
+
+<div id="authors" ng-controller="AuthorListCtrl as authorListCtrl">
+    <label>Search:
+        <input ng-model="authorListCtrl.authorFilter"
+               ng-change="authorListCtrl.filterFunc()" value="A">
+    </label>
+    <div class="page">
+        <label> Page
+            <input type="number" name="page" min="1" max="999" value="1" width="4" ng-model="authorListCtrl.pageNumber"
+               ng-change="authorListCtrl.filterFunc()">/{{authorListCtrl.authors.totalPages}}
+    </label>
+    </div>
+    <ul>
+        <li ng-repeat="author in authorListCtrl.authors.content|filter:authorListCtrl.authorFilter"
+            ng-class="{active:authorListCtrl.isCurrentAuthor(author.authorId)}">
+            <a href ng-click="authorListCtrl.setCurrentAuthor(author.authorId)">{{author.lastName}}
+                {{author.firstName}}</a>
+        </li>
+    </ul>
+</div>
+
+<div id="author" ng-controller="AuthorCtrl as authorCtrl">
+    <div class="header">
+        <p> Автор:{{authorCtrl.author.lastName}} {{authorCtrl.author.middleName}}{{authorCtrl.author.firstName}}</p>
+        <div ng-bind-html="authorCtrl.to_trusted(authorCtrl.authorAnnotation.body)" ></div>
+        <!--{{authorCtrl.authorAnnotation.body}}-->
+        <ul>
+            <li class="sequenceNode" ng-repeat="sequence in authorCtrl.sequences">
+                <a href>{{sequence.seqName}}</a>
+                <ul>
+                    <li class="Node innerNode" ng-repeat="book in sequence.books">
+                        <a href>{{book.book.title}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li class="Node" ng-repeat="book in authorCtrl.books">
+                <a href>{{book.title}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="books"></div>
+
+</body>
+</html>

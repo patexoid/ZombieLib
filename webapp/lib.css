@@ -1,0 +1,38 @@
+#header {
+    background: darkred;
+    width: 715px;
+    height: 100px;
+}
+
+.active {
+    background-color: #1c94c4;
+}
+
+div#authors {
+    width: 30%;
+    height: 600px;
+    float:left;
+    overflow: scroll;
+
+
+}
+
+div#author {
+    width: 70%;
+    height: 600px;
+    float:left;
+    overflow: scroll;
+}
+
+.sequenceNode {
+    list-style-type: none;
+}
+
+
+.Node {
+    list-style-type: decimal;
+}
+.innerNode {
+    margin-left:18px;
+}
+
