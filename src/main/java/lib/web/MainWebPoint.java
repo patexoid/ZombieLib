@@ -12,6 +12,7 @@ import lib.back.dataobj.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -79,6 +80,7 @@ public class MainWebPoint {
     }
 
     @Autowired
+    @Lazy
     JpaParserImpl _parser;
 //    MultiThreadJDBIParserImpl _parser;
 //            JDBIParserImpl _parser;
@@ -91,7 +93,7 @@ public class MainWebPoint {
             public void run() {
                 try {
                     Thread.currentThread().setName("Parser thread");
-                    _parser.parseAll("D:\\dev\\projects\\lib\\dump");
+                    _parser.parseAll("D:\\dev\\projects\\ZombieLib\\dump");
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                 }
