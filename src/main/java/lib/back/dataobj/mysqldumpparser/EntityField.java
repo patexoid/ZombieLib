@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,18 +44,21 @@ public class EntityField {
     private Method get;
     private Class parameterType;
     ObjectConverter converter;
-    public EntityField(Class<?> clazz,String fieldName){
+
+    public EntityField(Class<?> clazz, String fieldName) {
         try {
             String meth = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            get=clazz.getMethod("get"+meth);
-            parameterType=get.getReturnType();
-            set=clazz.getMethod("set" + meth,parameterType);
-            converter=_converters.get(parameterType);
-            if (converter == null) {
-                converter = entityConverter;
+            get = clazz.getMethod("get" + meth);
+            parameterType = get.getReturnType();
+            if (!Collection.class.isAssignableFrom(parameterType)) {
+                set = clazz.getMethod("set" + meth, parameterType);
+                converter = _converters.get(parameterType);
+                if (converter == null) {
+                    converter = entityConverter;
+                }
             }
         } catch (NoSuchMethodException e) {
-            log.error(e. getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -62,14 +66,14 @@ public class EntityField {
         return parameterType;
     }
 
-    public void setValue(Object entity, Object value) throws ReflectiveOperationException{
-        set.invoke(entity,value);
+    public void setValue(Object entity, Object value) throws ReflectiveOperationException {
+        set.invoke(entity, value);
 
     }
+
     public Object getValue(Object entity) throws ReflectiveOperationException {
         return get.invoke(entity);
     }
-
 
 
     public ObjectConverter getFieldConverter() {
@@ -86,7 +90,6 @@ public class EntityField {
     private static class StringConverter implements ObjectConverter<String> {
         @Override
         public String convert(String data, Class clazz, EntityManager entityManager) {
-            data = data.substring(1, data.length() - 1);
             data = replace(data, "\\'", "'");
             data = replace(data, "\\\\\\\\", "\\\\");
             data = replace(data, "\\n", "\n");
@@ -96,26 +99,26 @@ public class EntityField {
         }
 
         private String replace(String data, String replaceString, String replacement) {
-            if(data.contains(replaceString))
+            if (data.contains(replaceString))
                 return data.replaceAll(Matcher.quoteReplacement(replaceString), replacement);
             return data;
         }
 
         @Override
         public String getRegexp() {
-            return "'.*'";
+            return "'(.*)'";
         }
     }
 
     private static class BooleanConverter implements ObjectConverter<Boolean> {
         @Override
         public Boolean convert(String data, Class clazz, EntityManager entityManager) {
-            return !"'0'".equals(data);
+            return !"0".equals(data);
         }
 
         @Override
         public String getRegexp() {
-            return "'.?'";
+            return "'(.?)'";
         }
     }
 
@@ -127,7 +130,7 @@ public class EntityField {
 
         @Override
         public String getRegexp() {
-            return "-?\\d*";
+            return "(-?\\d*)";
         }
     }
 
@@ -139,7 +142,7 @@ public class EntityField {
 
         @Override
         public String getRegexp() {
-            return "-?\\d*";
+            return "(-?\\d*)";
         }
     }
 
@@ -149,7 +152,7 @@ public class EntityField {
         @Override
         public Date convert(String data, Class clazz, EntityManager entityManager) {
             try {
-                return _sdt.parse(data.substring(1, data.length() - 1));
+                return _sdt.parse(data);
             } catch (ParseException e) {
                 log.error(e.getMessage());
                 throw new RuntimeException(e);
@@ -159,7 +162,7 @@ public class EntityField {
 
         @Override
         public String getRegexp() {
-            return "'[\\d\\s\\:-]*'";
+            return "'([\\d\\s\\:-]*)'";
         }
     }
 
@@ -193,7 +196,7 @@ public class EntityField {
                         return o;
                     }
                 } catch (ReflectiveOperationException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
                 return null;
             }
@@ -201,7 +204,7 @@ public class EntityField {
 
         @Override
         public String getRegexp() {
-            return "\\d*";
+            return "(\\d*)";
         }
     }
 

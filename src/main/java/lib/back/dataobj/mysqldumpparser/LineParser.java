@@ -25,9 +25,19 @@ public class LineParser implements Iterator<String>, Iterable<String> {
     @Override
     public String next() {
         int closeBrIndex = findCloseBr(openBrIndex);
-        String subLine = line.substring(openBrIndex + 1, closeBrIndex);
-        openBrIndex = line.indexOf('(', closeBrIndex);
+        String subLine = new String(lineChars, openBrIndex + 1, closeBrIndex-(openBrIndex + 1));// line.substring(openBrIndex + 1, closeBrIndex);
+        openBrIndex = findOpenBr(closeBrIndex);//line.indexOf('(', closeBrIndex);
         return subLine;
+    }
+
+    private int findOpenBr(int closeBrIndex){
+        for (int i = closeBrIndex; i < lineChars.length; i++) {
+            if (lineChars[i] == '(') {
+                return i;
+            }
+        }
+        return -1;
+
     }
 
     private int findCloseBr(int openBrIndex) {

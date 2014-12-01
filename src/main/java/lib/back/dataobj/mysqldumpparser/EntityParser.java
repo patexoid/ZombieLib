@@ -38,7 +38,7 @@ public class EntityParser<E> {
         for (int i = 0; i < fields.length; i++) {
             _fields[i]=new EntityField(_class, fields[i]);
             regexp+=i==0?"":",";
-            regexp+="("+_fields[i].getFieldConverter().getRegexp()+")";
+            regexp+=_fields[i].getFieldConverter().getRegexp();
         }
         _pattern = Pattern.compile(regexp,Pattern.DOTALL);
     }

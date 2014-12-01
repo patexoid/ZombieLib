@@ -14,7 +14,12 @@ public class FileEntityIterator<T> implements Iterator<T>, Iterable<T> {
     private EntityManager _entityManager;
     private FileIterator _fileIterator;
     private T _next;
-    Validator<T> _validator;
+    Validator<T> _validator= new Validator<T>() {
+        @Override
+        public boolean isValid(T t) {
+            return isSValid&&((SValid)t).isValid();
+        }
+    };
     final boolean isSValid;
 
     public FileEntityIterator(EntityParser<T> entityParser, String path, String file, EntityManager entityManager) throws IOException {
@@ -45,10 +50,7 @@ public class FileEntityIterator<T> implements Iterator<T>, Iterable<T> {
         while (_fileIterator.hasNext()) {
             String nextLine = _fileIterator.next();
             T next = _entityParser.parse(nextLine, _entityManager);
-            if ((next != null) &&
-                    (!(isSValid) || ((SValid) next).isValid()) &&
-                    (_validator == null || _validator.isValid(next))
-                    ) {
+            if ((next != null) &&_validator.isValid(next)) {
                 return next;
             }
         }
