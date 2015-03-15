@@ -1,16 +1,10 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
-import org.skife.jdbi.com.fasterxml.classmate.util.MethodKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

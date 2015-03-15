@@ -1,6 +1,6 @@
 package lib.web;
 
-import lib.back.dataobj.mysqldumpparser.JpaParserImpl;
+import lib.back.mysqldumpparser.JpaParserImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

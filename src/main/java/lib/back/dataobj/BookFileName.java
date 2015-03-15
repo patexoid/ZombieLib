@@ -1,6 +1,6 @@
 package lib.back.dataobj;
 
-import lib.back.dataobj.mysqldumpparser.SValid;
+import lib.back.mysqldumpparser.SValid;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

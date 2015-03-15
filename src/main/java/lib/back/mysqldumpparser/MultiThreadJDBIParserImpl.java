@@ -1,4 +1,4 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
 import lib.back.dataobj.*;
 import lib.back.dataobj.repository.jdbi.JDBIIU;

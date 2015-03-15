@@ -1,4 +1,4 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;

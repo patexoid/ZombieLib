@@ -1,4 +1,4 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

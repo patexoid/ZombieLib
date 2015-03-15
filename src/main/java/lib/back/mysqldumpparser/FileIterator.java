@@ -1,10 +1,9 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
 import java.io.*;
 import java.util.Iterator;
 

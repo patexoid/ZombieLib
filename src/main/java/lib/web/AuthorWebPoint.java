@@ -3,23 +3,18 @@ package lib.web;
 import lib.back.dataobj.Author;
 import lib.back.dataobj.AuthorAnnotation;
 import lib.back.dataobj.AuthorWrapper;
-import lib.back.dataobj.mysqldumpparser.JDBIParserImpl;
-import lib.back.dataobj.mysqldumpparser.JpaParserImpl;
-import lib.back.dataobj.mysqldumpparser.MultiThreadJDBIParserImpl;
+import lib.back.mysqldumpparser.JpaParserImpl;
 import lib.back.dataobj.repository.AuthorAnnotationRepository;
 import lib.back.dataobj.repository.AuthorRepository;
-import lib.back.dataobj.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**

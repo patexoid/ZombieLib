@@ -1,4 +1,4 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
 import lib.back.dataobj.repository.AuthorRepository;
 import lib.back.dataobj.repository.BookRepository;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**

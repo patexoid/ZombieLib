@@ -1,4 +1,4 @@
-package lib.back.dataobj.mysqldumpparser;
+package lib.back.mysqldumpparser;
 
 /**
  * Created by apotekhin on 11/11/2014.
