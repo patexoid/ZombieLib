@@ -14,5 +14,4 @@ import java.util.List;
 @NoRepositoryBean
 public interface AbstractRepository<T, ID extends Serializable> extends CrudRepository<T,ID> {
 
-//    List<T> findAll(Pageable pageable);
 }

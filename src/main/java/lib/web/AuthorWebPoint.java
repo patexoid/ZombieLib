@@ -26,7 +26,8 @@ import java.util.Map;
  * Created by apotekhin on 7/4/2014.
  */
 @Controller
-public class MainWebPoint {
+@RequestMapping(value="/authors")
+public class AuthorWebPoint {
     private static Logger log = LoggerFactory.getLogger(JpaParserImpl.class);
 
     @Autowired
@@ -35,8 +36,6 @@ public class MainWebPoint {
     @Autowired
     private AuthorAnnotationRepository _authorAnnotationRepository;
 
-    @Autowired
-    private BookRepository _bookRepository;
 
 
     @RequestMapping(value="/main")
@@ -51,14 +50,14 @@ public class MainWebPoint {
 
 
 
-    @RequestMapping(value="/authors")
     @Transactional(readOnly = true)
+    @RequestMapping
     public @ResponseBody Page<Author> authorList(){
         Page<Author> authorsPage = _authorRepository.findAll(new PageRequest(0, 100));
         return authorsPage;
     }
 
-    @RequestMapping(value="/authors/{filter}/{page}")
+    @RequestMapping(value="/{filter}/{page}")
     @Transactional(readOnly = true)
     public @ResponseBody Page<Author> authorsByFilter(@PathVariable(value = "filter") String filter,@PathVariable(value = "page") Integer page){
         Page<Author> authorsPage = _authorRepository.findWithFilter(filter.toUpperCase(),new PageRequest(page-1,100));
@@ -66,7 +65,7 @@ public class MainWebPoint {
     }
 
 
-    @RequestMapping(value="/author/{id}")
+    @RequestMapping(value="/{id}")
     @Transactional(readOnly = true)
     public @ResponseBody AuthorWrapper author(@PathVariable(value = "id") Long id){
         Author author = _authorRepository.findOne(id);
@@ -79,27 +78,5 @@ public class MainWebPoint {
         return new AuthorWrapper(author, authorAnnotation);
     }
 
-    @Autowired
-    @Lazy
-    JpaParserImpl _parser;
-//    MultiThreadJDBIParserImpl _parser;
-//            JDBIParserImpl _parser;
 
-
-    @RequestMapping(value="/parse")
-    public  @ResponseBody String  parser(){
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    Thread.currentThread().setName("Parser thread");
-                    _parser.parseAll("D:\\dev\\projects\\ZombieLib\\dump");
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }.start();
-
-        return "started";
-    }
 }
