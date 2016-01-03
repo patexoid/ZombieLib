@@ -1,6 +1,6 @@
 package lib.back.dataobj;
 
-import lib.back.mysqldumpparser.SValid;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Entity
-public class Book implements Comparable<Book>, SValid{
+public class Book implements Comparable<Book>{
 
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
@@ -39,21 +39,19 @@ public class Book implements Comparable<Book>, SValid{
     Long fileSize;
     Date time;
     String title;
-    String title1;
     String lang;
     String fileType;
     Short year;
-    Boolean deleted;
-    String ver;
-    String fileAuthor;
-    Long n;
     String keywords;
     String md5;
-    Boolean broken;
     Date modified;
-    Short source;
-    Short state;
-    Long sourceId;
+
+    String annotationTitle;
+
+    @Lob
+    String annotationBody;
+
+    String fileName;
 
     public Book() {
     }
@@ -73,7 +71,6 @@ public class Book implements Comparable<Book>, SValid{
 
     @Override
     public int compareTo(Book o) {
-        assert o != null;
         return title.compareTo(o.title);
     }
 
@@ -81,17 +78,7 @@ public class Book implements Comparable<Book>, SValid{
     public String toString() {
         return title;
     }
-/*
 
-    public BookFileName getBookFileName() {
-        return _bookFileName;
-    }
-
-    public void setBookFileName(BookFileName bookFileName) {
-        _bookFileName = bookFileName;
-    }
-
-*/
     public Long getBookId() {
         return bookId;
     }
@@ -124,14 +111,6 @@ public class Book implements Comparable<Book>, SValid{
         this.title = title;
     }
 
-    public String getTitle1() {
-        return title1;
-    }
-
-    public void setTitle1(String title1) {
-        this.title1 = title1;
-    }
-
     public String getLang() {
         return lang;
     }
@@ -156,38 +135,6 @@ public class Book implements Comparable<Book>, SValid{
         this.year = year;
     }
 
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public String getVer() {
-        return ver;
-    }
-
-    public void setVer(String ver) {
-        this.ver = ver;
-    }
-
-    public String getFileAuthor() {
-        return fileAuthor;
-    }
-
-    public void setFileAuthor(String fileAuthor) {
-        this.fileAuthor = fileAuthor;
-    }
-
-    public Long getN() {
-        return n;
-    }
-
-    public void setN(Long n) {
-        this.n = n;
-    }
-
     public String getKeywords() {
         return keywords;
     }
@@ -204,14 +151,6 @@ public class Book implements Comparable<Book>, SValid{
         this.md5 = md5;
     }
 
-    public Boolean getBroken() {
-        return broken;
-    }
-
-    public void setBroken(Boolean broken) {
-        this.broken = broken;
-    }
-
     public Date getModified() {
         return modified;
     }
@@ -220,32 +159,27 @@ public class Book implements Comparable<Book>, SValid{
         this.modified = modified;
     }
 
-    public Short getSource() {
-        return source;
+    public String getAnnotationTitle() {
+        return annotationTitle;
     }
 
-    public void setSource(Short source) {
-        this.source = source;
+    public void setAnnotationTitle(String annotationTitle) {
+        this.annotationTitle = annotationTitle;
     }
 
-    public Short getState() {
-        return state;
+    public String getAnnotationBody() {
+        return annotationBody;
     }
 
-    public void setState(Short state) {
-        this.state = state;
+    public void setAnnotationBody(String annotationBody) {
+        this.annotationBody = annotationBody;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
-    }
-
-    @Override
-    public boolean isValid() {
-        return !deleted;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

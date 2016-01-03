@@ -20,9 +20,6 @@ public class Sequence implements Comparable<Sequence>{
     @Id
     Long seqId;
     String seqName;
-    Short source;
-    Short state;
-    Long sourceId;
 
     public Sequence() {
     }
@@ -62,27 +59,5 @@ public class Sequence implements Comparable<Sequence>{
         this.seqName = seqName;
     }
 
-    public Short getSource() {
-        return source;
-    }
 
-    public void setSource(Short source) {
-        this.source = source;
-    }
-
-    public Short getState() {
-        return state;
-    }
-
-    public void setState(Short state) {
-        this.state = state;
-    }
-
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
-    }
 }

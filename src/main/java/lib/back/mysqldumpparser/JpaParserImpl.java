@@ -44,7 +44,7 @@ public class JpaParserImpl extends Parser {
     }
 
     protected void save(String subLine, EntityParser entityParser) {
-        Object obj = entityParser.parse(subLine, _entityManager);
+        Object obj = entityParser.parse(subLine);
         save(obj);
     }
 

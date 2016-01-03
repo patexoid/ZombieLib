@@ -1,24 +1,23 @@
-package lib.back.dataobj;
+package lib.back.mysqldumpparser.desc;
 
-import javax.persistence.*;
+import lib.back.mysqldumpparser.SortOrder;
+
+import javax.persistence.Id;
+import javax.persistence.Lob;
 
 /**
- * Created by apotekhin on 9/2/2014.
+ * Created by Alexey on 03.01.2016.
  */
-@Entity
-public class AuthorAnnotation {
+public class BookAnnotationDesc {
 
-    @Id
+    @SortOrder(0)
     private Long id;
 
+    @SortOrder(1)
     String title;
 
-    @Lob
+    @SortOrder(2)
     String body;
-
-    public AuthorAnnotation() {
-    }
-
 
     public Long getId() {
         return id;
@@ -43,5 +42,4 @@ public class AuthorAnnotation {
     public void setBody(String body) {
         this.body = body;
     }
-
 }

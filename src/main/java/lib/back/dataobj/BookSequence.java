@@ -1,6 +1,5 @@
 package lib.back.dataobj;
 
-import lib.back.mysqldumpparser.SValid;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.Entity;
@@ -12,7 +11,7 @@ import javax.persistence.ManyToOne;
  * Created by alex on 31.01.14.
  */
 @Entity
-public class BookSequence implements SValid {
+public class BookSequence{
 
     @Id
     @GeneratedValue
@@ -76,8 +75,4 @@ public class BookSequence implements SValid {
         return book.getTitle();
     }
 
-    @Override
-    public boolean isValid() {
-        return book!=null&&sequence!=null;
-    }
 }

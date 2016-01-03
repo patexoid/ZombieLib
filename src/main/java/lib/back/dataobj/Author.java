@@ -15,19 +15,12 @@ public class Author implements Comparable<Author> {
 
     @Id
     Long authorId;
-    String firstName;
-    String middleName;
-    String lastName;
-    String nickName;
-    Boolean noDonate;
-    Long uid;
-    String webPay;
-    String email;
-    String homepage;
-    Short source;
-    Short state;
-    Long sourceId;
+    String name;
 
+    String annotationTitle;
+
+    @Lob
+    String body;
 
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "authors")
     @JsonIgnore
@@ -38,7 +31,7 @@ public class Author implements Comparable<Author> {
     }
 
     public Author(String authorName) {
-        firstName = authorName;
+        name = authorName;
     }
 
     public List<Book> getBooks() {
@@ -62,12 +55,12 @@ public class Author implements Comparable<Author> {
     @Override
     public int compareTo(Author o) {
 
-        return firstName.compareTo(o.firstName);
+        return name.compareTo(o.name);
     }
 
     @Override
     public String toString() {
-        return firstName;
+        return name;
     }
 
     public Long getAuthorId() {
@@ -78,100 +71,11 @@ public class Author implements Comparable<Author> {
         this.authorId = authorId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public Boolean getNoDonate() {
-        return noDonate;
-    }
-
-    public void setNoDonate(Boolean noDonate) {
-        this.noDonate = noDonate;
-    }
-
-    public Long getUid() {
-        return uid;
-    }
-
-    public void setUid(Long uid) {
-        this.uid = uid;
-    }
-
-    public String getWebPay() {
-        return webPay;
-    }
-
-    public void setWebPay(String webPay) {
-        this.webPay = webPay;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getHomepage() {
-        return homepage;
-    }
-
-    public void setHomepage(String homepage) {
-        this.homepage = homepage;
-    }
-
-    public Short getSource() {
-        return source;
-    }
-
-    public void setSource(Short source) {
-        this.source = source;
-    }
-
-    public Short getState() {
-        return state;
-    }
-
-    public void setState(Short state) {
-        this.state = state;
-    }
-
-    public Long getSourceId() {
-        return sourceId;
-    }
-
-    public void setSourceId(Long sourceId) {
-        this.sourceId = sourceId;
-    }
-
 }

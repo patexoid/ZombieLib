@@ -106,7 +106,7 @@ public interface JDBIIU {
     @BatchChunkSize(CHUNK_SIZE)
     public void insertBookSequence(@BestBindBean("bs") Iterator<BookSequence> sequence);
 
-
+/*
     @SqlUpdate(insert_bookFileName)
     public int insertBookFileName(@BestBindBean("bf") BookFileName bookFileName);
 
@@ -129,7 +129,7 @@ public interface JDBIIU {
     @SqlBatch(merge_bookAnnotation)
     @BatchChunkSize(CHUNK_SIZE)
     public void insertBookAnnotation(@BestBindBean("ba") Iterator<BookAnnotation> authorAnnotation);
-
+*/
     @SqlBatch("insert into AUTHOR_BOOK (authorId, bookId) values (:ab.author,:ab.book)")
     @BatchChunkSize(CHUNK_SIZE)
     public void addAuthorBookRelation(@BestBindBean("ab") Iterator<AuthorBookRelation> ab);

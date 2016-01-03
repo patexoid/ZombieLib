@@ -11,27 +11,19 @@ public class FileEntityIterator<T> implements Iterator<T>, Iterable<T> {
 
 
     private EntityParser<T> _entityParser;
-    private EntityManager _entityManager;
+
     private FileIterator _fileIterator;
     private T _next;
-    Validator<T> _validator= new Validator<T>() {
-        @Override
-        public boolean isValid(T t) {
-            return isSValid&&((SValid)t).isValid();
-        }
-    };
-    final boolean isSValid;
 
-    public FileEntityIterator(EntityParser<T> entityParser, String path, String file, EntityManager entityManager) throws IOException {
-        this(entityParser, new FileIterator(path, file), entityManager);
+    public FileEntityIterator(EntityParser<T> entityParser, String path, String file) throws IOException {
+        this(entityParser, new FileIterator(path, file));
     }
 
-    public FileEntityIterator(EntityParser<T> entityParser, FileIterator fileIterator, EntityManager entityManager) {
+    public FileEntityIterator(EntityParser<T> entityParser, FileIterator fileIterator) {
         _entityParser = entityParser;
         _fileIterator = fileIterator;
-        _entityManager = entityManager;
+
         _next = getNext();
-         isSValid = SValid.class.isAssignableFrom(_entityParser.getClazz());
     }
 
     @Override
@@ -49,8 +41,8 @@ public class FileEntityIterator<T> implements Iterator<T>, Iterable<T> {
     private T getNext() {
         while (_fileIterator.hasNext()) {
             String nextLine = _fileIterator.next();
-            T next = _entityParser.parse(nextLine, _entityManager);
-            if ((next != null) &&_validator.isValid(next)) {
+            T next = _entityParser.parse(nextLine);
+            if ((next != null)) {
                 return next;
             }
         }
@@ -67,7 +59,4 @@ public class FileEntityIterator<T> implements Iterator<T>, Iterable<T> {
         return this;
     }
 
-    public void setValidator(Validator<T> validator) {
-        _validator = validator;
-    }
 }

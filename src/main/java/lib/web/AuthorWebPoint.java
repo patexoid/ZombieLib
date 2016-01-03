@@ -1,10 +1,8 @@
 package lib.web;
 
 import lib.back.dataobj.Author;
-import lib.back.dataobj.AuthorAnnotation;
-import lib.back.dataobj.AuthorWrapper;
+
 import lib.back.mysqldumpparser.JpaParserImpl;
-import lib.back.dataobj.repository.AuthorAnnotationRepository;
 import lib.back.dataobj.repository.AuthorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +26,6 @@ public class AuthorWebPoint {
     @Autowired
     private AuthorRepository _authorRepository;
 
-    @Autowired
-    private AuthorAnnotationRepository _authorAnnotationRepository;
 
 
 
@@ -60,7 +56,7 @@ public class AuthorWebPoint {
     }
 
 
-    @RequestMapping(value="/{id}")
+ /*   @RequestMapping(value="/{id}")
     @Transactional(readOnly = true)
     public @ResponseBody AuthorWrapper author(@PathVariable(value = "id") Long id){
         Author author = _authorRepository.findOne(id);
@@ -71,7 +67,7 @@ public class AuthorWebPoint {
             authorAnnotation.setBody(body);
         }
         return new AuthorWrapper(author, authorAnnotation);
-    }
+    }*/
 
 
 }

@@ -1,7 +1,6 @@
 package lib.back.load;
 
 import lib.back.dataobj.Book;
-import lib.back.dataobj.BookFileName;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,14 +41,14 @@ public class FlibustaLoader extends Loader{
     }
 
     private String getFileName(Book book) {
-        BookFileName bookFileName = null;//book.getBookFileName();
+      /*  BookFileName bookFileName = null;//book.getBookFileName();
         String fileName;
         if(bookFileName==null){
             fileName=book.getTitle();
         } else {
             fileName=bookFileName.getFileName();
-        }
-        return book.getBookId()+"_"+fileName;
+        }*/
+        return String.valueOf(book.getBookId());//+"_"+fileName;
     }
 
 

@@ -3,35 +3,27 @@ package lib.back.mysqldumpparser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-/**
- * Created by alex on 30.01.14.
- */
-public class EntityField {
-    private static Logger log = LoggerFactory.getLogger(EntityField.class);
 
+public class EntityField implements Comparable<EntityField> {
     public static final ObjectConverter stringConverter = new StringConverter();
     public static final ObjectConverter booleanConverter = new BooleanConverter();
     public static final ObjectConverter longConverter = new LongConverter();
     public static final ObjectConverter shortConverter = new ShortConverter();
     public static final ObjectConverter dateConverter = new DateConverter();
-    public static final EntityConverter entityConverter = new EntityConverter();
+    private static Logger log = LoggerFactory.getLogger(EntityField.class);
     private static Map<Class, ObjectConverter> _converters;
 
     static {
-        _converters = new HashMap<Class, ObjectConverter>();
+        _converters = new HashMap<>();
         _converters.put(String.class, stringConverter);
         _converters.put(Boolean.class, booleanConverter);
         _converters.put(Long.class, longConverter);
@@ -40,34 +32,60 @@ public class EntityField {
 
     }
 
-    private Method set;
-    private Method get;
-    private Class parameterType;
+    private final int order;
+    private final boolean skip;
+    private final Method set;
+    private final Method get;
+    private final Class parameterType;
     ObjectConverter converter;
 
-    public EntityField(Class<?> clazz, String fieldName) {
+    public EntityField(Class<?> clazz, Field field) throws MysqlParerRuntimeException {
+        String fieldName = field.getName();
+        skip = field.getAnnotation(SkipField.class) != null;
+        try {
+            order = field.getAnnotation(SortOrder.class).value();
+        } catch (NullPointerException e) {
+            log.error("SortOrder annotation was not defined for field " + clazz + "." + fieldName);
+            throw new MysqlParerRuntimeException("SortOrder annotation was not defined for field " + clazz + "." + fieldName);
+        }
         try {
             String meth = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
             get = clazz.getMethod("get" + meth);
+
+            try {
+                get.setAccessible(true);
+            } catch (SecurityException e) {
+                log.warn("unable to get.setAccessible(true) security error: " + e.getMessage());
+            }
             parameterType = get.getReturnType();
-            if (!Collection.class.isAssignableFrom(parameterType)) {
-                set = clazz.getMethod("set" + meth, parameterType);
-                converter = _converters.get(parameterType);
-                if (converter == null) {
-                    converter = entityConverter;
-                }
+            set = clazz.getMethod("set" + meth, parameterType);
+            try {
+                get.setAccessible(true);
+            } catch (SecurityException e) {
+                log.warn("unable to get.setAccessible(true) security error: " + e.getMessage());
+            }
+            converter = _converters.get(parameterType);
+            if (converter == null) {
+                throw new MysqlParerRuntimeException("unable to convert " + clazz + "." + fieldName + "type " + parameterType.getClass());
             }
         } catch (NoSuchMethodException e) {
             log.error(e.getMessage());
+            throw new MysqlParerRuntimeException(e);
         }
     }
+
+    public String getRegexp() {
+    return skip?getFieldConverter().getRegexpNoGroup():getFieldConverter().getRegexp();
+    }
+
 
     public Class getParameterType() {
         return parameterType;
     }
 
-    public void setValue(Object entity, Object value) throws ReflectiveOperationException {
-        set.invoke(entity, value);
+    public void setValue(Object entity, String value) throws ReflectiveOperationException {
+
+        set.invoke(entity, getFieldConverter().convert(value));
 
     }
 
@@ -81,15 +99,24 @@ public class EntityField {
     }
 
 
-    public static interface ObjectConverter<E> {
-        E convert(String data, Class clazz, EntityManager entityManager);
+    @SuppressWarnings("NullableProblems")
+    @Override
+    public int compareTo(EntityField other) {
+        return (order < other.order) ? -1 : ((order == other.order) ? 0 : 1);
+    }
+
+
+    public interface ObjectConverter<E> {
+        E convert(String data);
 
         String getRegexp();
+
+        String getRegexpNoGroup();
     }
 
     private static class StringConverter implements ObjectConverter<String> {
         @Override
-        public String convert(String data, Class clazz, EntityManager entityManager) {
+        public String convert(String data) {
             data = replace(data, "\\'", "'");
             data = replace(data, "\\\\\\\\", "\\\\");
             data = replace(data, "\\n", "\n");
@@ -108,11 +135,16 @@ public class EntityField {
         public String getRegexp() {
             return "'(.*)'";
         }
+
+        @Override
+        public String getRegexpNoGroup() {
+            return "'.*'";
+        }
     }
 
     private static class BooleanConverter implements ObjectConverter<Boolean> {
         @Override
-        public Boolean convert(String data, Class clazz, EntityManager entityManager) {
+        public Boolean convert(String data) {
             return !"0".equals(data);
         }
 
@@ -120,11 +152,16 @@ public class EntityField {
         public String getRegexp() {
             return "'(.?)'";
         }
+
+        @Override
+        public String getRegexpNoGroup() {
+            return "'.?'";
+        }
     }
 
     private static class LongConverter implements ObjectConverter<Long> {
         @Override
-        public Long convert(String data, Class clazz, EntityManager entityManager) {
+        public Long convert(String data) {
             return Long.valueOf(data);
         }
 
@@ -132,11 +169,16 @@ public class EntityField {
         public String getRegexp() {
             return "(-?\\d*)";
         }
+
+        @Override
+        public String getRegexpNoGroup() {
+            return "-?\\d*";
+        }
     }
 
     private static class ShortConverter implements ObjectConverter<Short> {
         @Override
-        public Short convert(String data, Class clazz, EntityManager entityManager) {
+        public Short convert(String data) {
             return Short.valueOf(data);
         }
 
@@ -144,13 +186,18 @@ public class EntityField {
         public String getRegexp() {
             return "(-?\\d*)";
         }
+
+        @Override
+        public String getRegexpNoGroup() {
+            return "-?\\d*";
+        }
     }
 
     private static class DateConverter implements ObjectConverter<Date> {
         SimpleDateFormat _sdt = new SimpleDateFormat("YYY-MM-dd HH:mm:ss");
 
         @Override
-        public Date convert(String data, Class clazz, EntityManager entityManager) {
+        public Date convert(String data) {
             try {
                 return _sdt.parse(data);
             } catch (ParseException e) {
@@ -164,48 +211,14 @@ public class EntityField {
         public String getRegexp() {
             return "'([\\d\\s\\:-]*)'";
         }
-    }
-
-    private static class EntityConverter implements ObjectConverter {
-        private Map<Class, Method> cache = new HashMap<Class, Method>();
 
         @Override
-        public Object convert(String data, Class clazz, EntityManager entityManager) {
-            if (entityManager != null) {
-                return entityManager.find(clazz, Long.valueOf(data));
-            } else {
-                try {
-                    Object o = clazz.getConstructor().newInstance();
-                    Method setMethod = cache.get(clazz);
-                    if (setMethod == null) {
-                        Field[] fields = clazz.getDeclaredFields();
-                        main:
-                        for (Field field : fields) {
-                            for (Annotation annotation : field.getAnnotations()) {
-                                if (Id.class.isAssignableFrom(annotation.annotationType())) {
-                                    String fieldName = field.getName();
-                                    setMethod = clazz.getMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), Long.class);
-                                    cache.put(clazz, setMethod);
-                                    break main;
-                                }
-                            }
-                        }
-                    }
-                    if (setMethod != null) {
-                        setMethod.invoke(o, Long.valueOf(data));
-                        return o;
-                    }
-                } catch (ReflectiveOperationException e) {
-                    log.error(e.getMessage(), e);
-                }
-                return null;
-            }
-        }
-
-        @Override
-        public String getRegexp() {
-            return "(\\d*)";
+        public String getRegexpNoGroup() {
+            return "'[\\d\\s\\:-]*'";
         }
     }
 
+    public boolean isRequired() {
+        return !skip;
+    }
 }

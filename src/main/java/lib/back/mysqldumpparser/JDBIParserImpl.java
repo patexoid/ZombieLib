@@ -31,7 +31,7 @@ public class JDBIParserImpl extends Parser {
     private JDBIIU _batchIU;
 
     @PostConstruct
-    private void load() {
+    /*private void load() {
         _batchIU = _dbi.open(JDBIIU.class);
         _batchMethodMap.put(Author.class, new BatchMethod<Author>() {
             @Override
@@ -113,7 +113,7 @@ public class JDBIParserImpl extends Parser {
             }
         });
     }
-
+*/
     private void refreshAuthorIds() {
         synchronized (authorIds) {
             if (authorIds.isEmpty()) {
@@ -157,7 +157,7 @@ public class JDBIParserImpl extends Parser {
         long currentTimeMillis = System.currentTimeMillis();
         BatchMethod<?> batchMethod = _batchMethodMap.get(entityParser.getClazz());
         if (batchMethod != null) {
-            batchMethod.update(new FileEntityIterator(entityParser, path, filename, null));
+            batchMethod.update(new FileEntityIterator(entityParser, path, filename));
         } else {
             super.parseEntity(entityParser, path, filename);
         }
@@ -194,12 +194,12 @@ public class JDBIParserImpl extends Parser {
             sequenceIds.add(((Sequence) entity).getSeqId());
         } else if (entity instanceof BookSequence) {
             _batchIU.insertBookSequence((BookSequence) entity);
-        } else if (entity instanceof BookFileName) {
-            _batchIU.insertBookFileName((BookFileName) entity);
-        } else if (entity instanceof AuthorAnnotation) {
-            _batchIU.insertAuthorAnnotation((AuthorAnnotation) entity);
-        } else if (entity instanceof BookAnnotation) {
-            _batchIU.insertBookAnnotation((BookAnnotation) entity);
+//        } else if (entity instanceof BookFileName) {
+//            _batchIU.insertBookFileName((BookFileName) entity);
+//        } else if (entity instanceof AuthorAnnotation) {
+//            _batchIU.insertAuthorAnnotation((AuthorAnnotation) entity);
+//        } else if (entity instanceof BookAnnotation) {
+//            _batchIU.insertBookAnnotation((BookAnnotation) entity);
 
         }
     }
@@ -224,10 +224,6 @@ public class JDBIParserImpl extends Parser {
     }
 
 
-    @Override
-    protected EntityManager getEntityManager() {
-        return null;
-    }
 
     private static interface BatchMethod<T> {
         public void update(FileEntityIterator<T> iterator);
