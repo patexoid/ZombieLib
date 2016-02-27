@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by apotekhin on 7/4/2014.
  */
-@Controller
+@RestController
 @RequestMapping(value="/authors")
 public class AuthorWebPoint {
     private static Logger log = LoggerFactory.getLogger(JpaParserImpl.class);

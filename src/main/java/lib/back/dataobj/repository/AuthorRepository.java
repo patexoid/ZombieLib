@@ -23,14 +23,14 @@ import java.util.List;
  */
 public interface AuthorRepository extends AbstractRepository<Author,Long> {
 
-    @Query("SELECT a FROM Author a order by a.lastName, a.firstName asc")
+    @Query("SELECT a FROM Author a order by a.name asc")
     Page<Author> findAll(Pageable pageable);
 
 
     @Query("SELECT a FROM Author a JOIN FETCH a.books WHERE a.id = (:id)")
     public Author findByIdAndFetchBooksEagerly(@Param("id") Long id);
 
-    @Query("SELECT a FROM Author a WHERE UPPER(a.firstName) like :filter% or UPPER(a.middleName) like :filter% or UPPER(a.lastName) like :filter%")
+    @Query("SELECT a FROM Author a WHERE UPPER(a.name) like :filter%")
     Page<Author> findWithFilter(@Param("filter") String filter, Pageable pageable);
 
     @Modifying(clearAutomatically = true)

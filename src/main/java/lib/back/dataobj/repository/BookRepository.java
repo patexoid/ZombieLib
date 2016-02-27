@@ -5,11 +5,14 @@ import lib.back.dataobj.Book;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by apotekhin on 7/2/2014.
  */
+
 public interface BookRepository extends CrudRepository<Book,Long> {
 
     @Modifying(clearAutomatically = true)
